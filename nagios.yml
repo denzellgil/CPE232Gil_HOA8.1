@@ -1,0 +1,30 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates(CentOS)
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates(Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+ 
+- hosts: all
+  become: true
+  tasks:
+    - name: Install Nagios for Ubuntu servers
+      include_role:
+        name: nagios_ubuntu
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install Nagios for CentOS server
+      include_role:
+        name: nagios_centos
+      when: ansible_distribution == "CentOS"
